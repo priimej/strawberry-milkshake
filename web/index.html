@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skating Route Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+
+
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>Skate Route</h1>
+            
+            <div class="form-group">
+                <label for="start">Start</label>
+                <input type="text" id="start" placeholder="Starting point">
+            </div>
+            
+            <div class="form-group">
+                <label for="end">End</label>
+                <input type="text" id="end" placeholder="Destination">
+            </div>
+            
+            <button id="calc-btn">Calculate</button>
+            
+            <div id="results"></div>
+        </div>
+        
+        <div id="map"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
