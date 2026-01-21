@@ -123,10 +123,6 @@ endInput.addEventListener('focus', function() {
     endInput.placeholder = 'Click on map to select...';
 });
 
-calcBtn.addEventListener('click', function() {
-    console.log('Calculate clicked');
-});
-
 map.on('load', function() {
     console.log('Map loaded');
     getUserLocation();
@@ -137,4 +133,42 @@ map.on('mousemove', (e) => {
     document.getElementById('info').innerHTML =
         `Coordinates: ${JSON.stringify(e.lngLat.wrap())}`;
 });
+
+//Sends the python backend the cords
+calcBtn.addEventListener('click', function() {
+    console.log('Calculate clicked');
+    
+    if (!startMarker || !endMarker) {
+        alert('Please set both start and end locations');
+        return;
+    }
+    
+    const startCoords = startMarker.getLngLat();
+    const endCoords = endMarker.getLngLat();
+    
+    fetch('http://localhost:8000/main', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            start: { lat: startCoords.lat, lng: startCoords.lng },
+            end: { lat: endCoords.lat, lng: endCoords.lng }
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Route data:', data);
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+// Show results
+resultsDiv.style.display = 'block';
+document.getElementById('result-distance').textContent = data.distance_km.toFixed(2) + ' km';
+document.getElementById('result-time').textContent = Math.round(data.skate_time_min) + ' min';
+
 

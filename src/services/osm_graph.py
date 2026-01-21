@@ -2,7 +2,7 @@ import osmnx as ox
 import networkx as nx
 
 from services.graph import Graph
-from services.elevation import elevation_delta
+#from services.elevation import elevation_delta
 from services.terrain import terrain_penalty
 from services.geometry import haversine_distance
 
