@@ -34,7 +34,7 @@ function getUserLocation() {
                 duration: 1000
             });
             
-            // Automatically set start marker to user location\
+            // Automatically set start marker to user location
             if (startMarker) startMarker.remove();
             startMarker = new maplibregl.Marker({ color: 'green' })
                 .setLngLat([lng, lat])
@@ -108,7 +108,7 @@ map.on('click', function(e) {
         
         endInput.value = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
         console.log('End set:', lat, lng, `Distance: ${distance.toFixed(2)}km`);
-        }
+    }
 });
 
 // Button to start selecting start location
@@ -146,6 +146,10 @@ calcBtn.addEventListener('click', function() {
     const startCoords = startMarker.getLngLat();
     const endCoords = endMarker.getLngLat();
     
+    // Show loading state
+    calcBtn.disabled = true;
+    calcBtn.textContent = 'Calculating...';
+    
     fetch('http://localhost:8000/main', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -162,13 +166,105 @@ calcBtn.addEventListener('click', function() {
     })
     .then(data => {
         console.log('Route data:', data);
+                
+        // Draw the route on the map
+        if (data.geometry && data.geometry.length > 0) {
+            // Backend returns [[lat, lng], [lat, lng], ...]
+            // We need [lng, lat] for MapLibre
+            let coordinates = data.geometry.map(point => [point[1], point[0]]);
+            
+            // FIX: Add the actual start and end points to ensure complete connection
+            const actualStart = [startCoords.lng, startCoords.lat];
+            const actualEnd = [endCoords.lng, endCoords.lat];
+            
+            // Prepend start point if it's not already there
+            const firstPoint = coordinates[0];
+            const distToStart = Math.sqrt(
+                Math.pow(firstPoint[0] - actualStart[0], 2) + 
+                Math.pow(firstPoint[1] - actualStart[1], 2)
+            );
+            
+            if (distToStart > 0.0001) { // ~10 meters
+                coordinates.unshift(actualStart);
+                console.log('Added start point to route');
+            }
+            
+            // Append end point if it's not already there
+            const lastPoint = coordinates[coordinates.length - 1];
+            const distToEnd = Math.sqrt(
+                Math.pow(lastPoint[0] - actualEnd[0], 2) + 
+                Math.pow(lastPoint[1] - actualEnd[1], 2)
+            );
+            
+            if (distToEnd > 0.0001) { // ~10 meters
+                coordinates.push(actualEnd);
+                console.log('Added end point to route');
+            }
+            
+            console.log(`Route has ${coordinates.length} points (including start/end)`);
+            
+            // Add a source for the route line
+            if (!map.getSource('route')) {
+                map.addSource('route', {
+                    type: 'geojson',
+                    data: {
+                        type: 'Feature',
+                        geometry: {
+                            type: 'LineString',
+                            coordinates: coordinates
+                        }
+                    }
+                });
+                
+                // Add a layer to display the route line
+                map.addLayer({
+                    id: 'route-line',
+                    type: 'line',
+                    source: 'route',
+                    layout: {
+                        'line-join': 'round',
+                        'line-cap': 'round'
+                    },
+                    paint: {
+                        'line-color': '#007bff',
+                        'line-width': 4,
+                        'line-opacity': 0.8
+                    }
+                });
+            } else {
+                // Update existing route
+                map.getSource('route').setData({
+                    type: 'Feature',
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: coordinates
+                    }
+                });
+            }
+            
+            // Fit map to route bounds
+            const bounds = coordinates.reduce((bounds, coord) => {
+                return bounds.extend(coord);
+            }, new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
+            
+            map.fitBounds(bounds, { padding: 50 });
+            
+            // Show results
+            resultsDiv.innerHTML = `
+                <div style="padding: 10px; background: #f5f5f5; border-radius: 4px;">
+                    <p><strong>Distance:</strong> ${data.distance_km.toFixed(2)} km</p>
+                    <p><strong>Skating Time:</strong> ${Math.round(data.skate_time_min)} minutes</p>
+                </div>
+            `;
+        }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error calculating route. Make sure the backend is running!');
+    })
+    .finally(() => {
+        // Reset button
+        calcBtn.disabled = false;
+        calcBtn.textContent = 'Calculate';
+    });
 });
-
-// Show results
-resultsDiv.style.display = 'block';
-document.getElementById('result-distance').textContent = data.distance_km.toFixed(2) + ' km';
-document.getElementById('result-time').textContent = Math.round(data.skate_time_min) + ' min';
-
-
