@@ -2,12 +2,15 @@ import osmnx as ox
 import networkx as nx
 
 from services.graph import Graph
-#from services.elevation import elevation_delta
 from services.terrain import terrain_penalty
 from services.geometry import haversine_distance
 
 
-BROOKLYN_PLACE = "Bath Beach, Brooklyn, New York City, New York, USA"
+# EXPANDED: Get all of Brooklyn instead of just Bath Beach
+BROOKLYN_PLACE = "Brooklyn, New York City, New York, USA"
+
+# Or if that's too large, try a bigger neighborhood:
+# BROOKLYN_PLACE = "Southwest Brooklyn, Brooklyn, New York City, New York, USA"
 
 # Build the OSM graph for Brooklyn with skating-specific weights
 def build_brooklyn_graph() -> Graph:
@@ -16,14 +19,19 @@ def build_brooklyn_graph() -> Graph:
     # Step 1: Download + preprocess OSM data
     # --------------------------------------------------
 
+    print(f"Downloading OSM data for: {BROOKLYN_PLACE}")
+    print("This may take a few minutes for larger areas...")
+    
     G = ox.graph_from_place(
         BROOKLYN_PLACE,
-        network_type="walk",
+        network_type="walk",  # Include pedestrian paths, sidewalks, etc.
         simplify=True
     )
 
     # Undirected because skating is bi-directional
     G = G.to_undirected()
+    
+    print(f"Downloaded {len(G.nodes)} nodes and {len(G.edges)} edges")
 
     # --------------------------------------------------
     # Step 2: Create our custom graph
@@ -55,12 +63,6 @@ def build_brooklyn_graph() -> Graph:
             graph.nodes[u].lat, graph.nodes[u].lng,
             graph.nodes[v].lat, graph.nodes[v].lng
         )
-
-        # # ---- Elevation penalty ----
-        # slope_penalty = elevation_delta(
-        #     graph.nodes[u],
-        #     graph.nodes[v]
-        # )
 
         # ---- Terrain / surface penalty ----
         surface = data.get("surface")
