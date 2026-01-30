@@ -5,42 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet'/>
     <script src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>
-    <title>Skating Route Calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.cdnfonts.com/css/amsterdam-2" rel="stylesheet">
+    <title>Skate Route</title>
+    <link rel="stylesheet" href="stylesheet.css">
 </head>
 
 <body>
-    <div class="container">
-        <div class="sidebar">
-            <h1>Skate Route</h1>
+    <!-- Landing Section -->
+    <section class="landing-section">
+        <div class="hero">
+            <img src="strawberries.png" class="hero-img strawberries-img">
+            <img src="Milkshake.png" class="hero-img milkshake-img">
             
-            <div class="form-group">
-                <label for="start">Start</label>
-                <input type="text" id="start" placeholder="Starting point">
-            </div>
-            
-            <div class="form-group">
-                <label for="end">End</label>
-                <input type="text" id="end" placeholder="Destination">
-            </div>
-            
-            <button id="calc-btn">Calculate</button>
-            
-            <div id="results"></div>
-
-            <div id="instructions">
-                <h2>Instructions</h2>
-                <p>Start is automatically set to your current location. If you want to change it, click on the start input field and then click on the map.</p>
-                <br>
-                <p>Click on where you want to start, then click on where you want to end. If you want to change start, click on start again, same with end.</p>
-            </div>
+            <h1 class="hero-title">Strawberry Milkshake</h1>
 
         </div>
+
         
-        <div id="map"></div>
-    </div>
-    
-    <pre id="info"></pre>
+        <img src="skyline.png" class="skyline-img">
+
+
+
+
+
+    </section>
+
+
+    <section class="coral-section"></section>
+
+
+
+    <!-- App Section -->
+    <section id="app" class="app-section">
+        <div class="container">
+            <div class="sidebar">
+                <h1>Skate Route</h1>
+                
+                <div class="form-group">
+                    <label for="start">Start</label>
+                    <input type="text" id="start" placeholder="Starting point">
+                </div>
+                
+                <div class="form-group">
+                    <label for="end">End</label>
+                    <input type="text" id="end" placeholder="Destination">
+                </div>
+                
+                <button id="calc-btn">Calculate</button>
+                
+                <div id="results"></div>
+
+                <div id="instructions">
+                    <h2>Instructions</h2>
+                    <p>Start is automatically set to your current location. If you want to change it, click on the start input field and then click on the map.</p>
+                    <br>
+                    <p>Click on where you want to start, then click on where you want to end. If you want to change start, click on start again, same with end.</p>
+                </div>
+            </div>
+            
+            <div id="map"></div>
+        </div>
+        
+        <pre id="info"></pre>
+    </section>
 
     <script src="app.js"></script>
 </body>
