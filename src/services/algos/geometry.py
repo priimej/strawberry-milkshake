@@ -1,5 +1,5 @@
 import math
-import services.graph
+from services.graph.graph import Graph
 
 #quick function for determining the distance between two points in KM
 def haversine_distance(lat1, lon1, lat2, lon2) -> float:
@@ -26,9 +26,7 @@ def haversine_distance(lat1, lon1, lat2, lon2) -> float:
 #   
 # Converts a list of node_ids into a list of (lat, lng) tuples.
 #
-def path_to_coordinates(graph, path):
-
-
+def path_to_coordinates(graph: Graph, path):
     coordinates = []
 
     for node_id in path:

@@ -1,5 +1,5 @@
-from services.geometry import haversine_distance
-from services.graph import Graph
+from services.algos.geometry import haversine_distance
+from services.graph.graph import Graph, Node
 
 # Assumptions: The Graph class has a 'nodes' attribute which is a dictionary
 # mapping node_id to node objects that have 'lat' and 'lng' attributes.
