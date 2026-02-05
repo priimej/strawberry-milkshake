@@ -29,6 +29,46 @@ body {
     position: relative;
 }
 
+.city-section {
+    padding: 0px;
+    text-align: center;
+}
+
+.city-header {
+    font-size: 30px;    
+    font-family: 'Amsterdam', sans-serif;
+    margin-bottom: 10px;
+    color: #06ba09;
+}
+
+.city-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+#cities {
+    width: 250px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.city-button {
+    width: 250px;
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.city-button:hover {
+    background: #0056b3;
+}
+
 .skyline-img {
     position: absolute;
     bottom: -200px;
@@ -80,7 +120,7 @@ body {
 }
 
 .milkshake-img {
-    bottom: 80px;
+    bottom: 170px;
     right: 0;
     transform: rotate(30deg); 
 }
@@ -88,8 +128,8 @@ body {
 .hero-title {
     font-size: 70px;    
     font-family: 'Amsterdam', sans-serif;
-    margin-bottom: 20px;
-    color: #ffffff;
+    margin-bottom: 10px;
+    color: #e453ca;
     z-index: 1; /* This keeps text in front */
 }
 
@@ -177,7 +217,3 @@ button:hover {
     border-radius: 4px;
 }
 
-#map {
-    flex: 1;
-    background: #e0e0e0;
-}
