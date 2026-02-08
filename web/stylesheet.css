@@ -149,12 +149,6 @@ body {
 
 
 
-
-
-
-
-
-
 /* App Section Styles */
 .app-section {
     min-height: 100vh;
@@ -217,3 +211,49 @@ button:hover {
     border-radius: 4px;
 }
 
+#map {
+    flex: 1;
+    background: #e0e0e0;
+    position: relative;
+}
+
+/* Loading spinner container */
+#map-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 9999;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#map-loading p {
+    font-size: 16px;
+    color: #333;
+    margin-top: 15px;
+}
+
+/* CSS Spinner animation */
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Hide loading when done */
+#map-loading.hidden {
+    display: none;
+}

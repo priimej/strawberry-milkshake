@@ -10,6 +10,7 @@ const startInput = document.getElementById('start');
 const endInput = document.getElementById('end');
 const calcBtn = document.getElementById('calc-btn');
 const resultsDiv = document.getElementById('results');
+const mapLoading = document.getElementById('map-loading');
 
 // Track markers and selection state
 let startMarker = null;
@@ -18,37 +19,61 @@ let selectingStart = false;
 let userLat = null;
 let userLng = null;
 
-
 // Get user location and center map
 function getUserLocation() {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            userLat = position.coords.latitude;
-            userLng = position.coords.longitude;
-            
-            map.flyTo({
-                center: [lng, lat],
-                zoom: 15,
-                duration: 1000
-            });
-            
-            // Automatically set start marker to user location
-            if (startMarker) startMarker.remove();
-            startMarker = new maplibregl.Marker({ color: 'green' })
-                .setLngLat([lng, lat])
-                .addTo(map);
-            
-            startInput.value = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-
-            
-            console.log('Located at:', lat, lng);
-        }, function(error) {
-            console.error('Geolocation error:', error);
-        });
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                // SUCCESS - User granted permission
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                userLat = lat;
+                userLng = lng;
+                
+                // Hide the loading spinner
+                if (mapLoading) {
+                    mapLoading.classList.add('hidden');
+                }
+                
+                map.flyTo({
+                    center: [lng, lat],
+                    zoom: 15,
+                    duration: 1000
+                });
+                
+                // Automatically set start marker to user location
+                if (startMarker) startMarker.remove();
+                startMarker = new maplibregl.Marker({ color: 'green' })
+                    .setLngLat([lng, lat])
+                    .addTo(map);
+                
+                startInput.value = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                console.log('Located at:', lat, lng);
+            }, 
+            function(error) {
+                // ERROR - User denied permission or error occurred
+                console.error('Geolocation error:', error);
+                
+                // Keep showing the GIF with error message
+                if (mapLoading) {
+                    mapLoading.innerHTML = `
+                        <img src="loading.gif" alt="Loading..." style="width: 100px; height: 100px; display: block; margin: 0 auto;">
+                        <p style="color: #ff6b9d; font-weight: bold; margin-top: 15px;">Location Access Denied</p>
+                        <p style="font-size: 14px; color: #666; margin-top: 10px;">Please enable location access in your browser settings and refresh the page.</p>
+                    `;
+                }
+                // GIF keeps playing forever until they grant permission
+            }
+        );
     } else {
         console.log('Geolocation not supported');
+        if (mapLoading) {
+            mapLoading.innerHTML = `
+                <img src="loading.gif" alt="Loading..." style="width: 100px; height: 100px; display: block; margin: 0 auto;">
+                <p style="color: #ff6b9d; font-weight: bold; margin-top: 15px;">Geolocation Not Supported</p>
+                <p style="font-size: 14px; color: #666; margin-top: 10px;">Your browser doesn't support location services.</p>
+            `;
+        }
     }
 }
 
@@ -123,6 +148,7 @@ endInput.addEventListener('focus', function() {
     endInput.placeholder = 'Click on map to select...';
 });
 
+// When map loads, request location
 map.on('load', function() {
     console.log('Map loaded');
     getUserLocation();
