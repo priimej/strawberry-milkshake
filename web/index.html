@@ -19,6 +19,22 @@
             
             <h1 class="hero-title">Strawberry Milkshake</h1>
 
+
+
+            <div class="city-section">
+                <h2 class="city-header">Why walk when you could skate?</h2>
+                <label for="cities">Which city do you want to explore?</label>
+                <select id="cities" name="cities">
+                    <option value="">Select a city...</option>
+                    <option value="nyc">New York City, NY</option>
+                    <option value="la">Los Angeles, CA</option>
+                    <option value="chicago">Chicago, IL</option>
+                    <option value="houston">Houston, TX</option>
+                    <option value="phoenix">Phoenix, AZ</option>
+                </select>
+                <button class="city-button">Enter</button>
+            </div>
+
         </div>
 
         
@@ -63,10 +79,12 @@
                 </div>
             </div>
             
-            <div id="map"></div>
-        </div>
-        
-        <pre id="info"></pre>
+            <div id="map">
+                <div id="map-loading">
+                    <img src="loading.gif" alt="Loading...">
+                    <p>Please enable location access to use the map</p>
+                </div>
+            </div>
     </section>
 
     <script src="app.js"></script>
